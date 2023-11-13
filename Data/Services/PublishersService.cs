@@ -18,7 +18,7 @@ namespace libreriaa_SLE.Data.Services
         //METODO QUE NOS PERMITE AGREGAR UNA NUEVA EDITORA EN LA BD
 
 
-        public void AddPublisher(PublisherVM publisher)
+        public Publisher AddPublisher(PublisherVM publisher)
         {
             var _publisher = new Publisher()
             {
@@ -27,7 +27,14 @@ namespace libreriaa_SLE.Data.Services
 
             _context.Publisher.Add(_publisher);
             _context.SaveChanges();
+
+            return _publisher;
+
         }
+
+
+        public Publisher GetPublisherByID(int id ) => _context.Publisher.FirstOrDefault(n => n.Id == id);
+
 
         public PublisherWithBooksAndAuthorsVM GetPublisherData(int publisherId)
         {

@@ -20,12 +20,29 @@ namespace libreriaa_SLE.Controllers
         [HttpPost("add-publisher")]
         public IActionResult AddPublisher([FromBody] PublisherVM  publisher)
         {
-            _publishersServices.AddPublisher(publisher);
-            return Ok();
+             var newPublisher= _publishersServices.AddPublisher(publisher);
+            return Created(nameof(AddPublisher), newPublisher);
         }
 
-        [HttpGet("get-publisher-books-with-authors/{id}")]
+        [HttpGet("get-publisher-by-id/{id}")]
         public IActionResult GetPublisherData(int id)
+        {
+            var _response = _publishersServices.GetPublisherByID(id);
+            if (_response != null)
+            {
+                return Ok(_response);
+            }
+            else
+            {
+                return NotFound();
+            }
+            
+        }
+
+
+
+        [HttpGet("get-publisher-books-with-authors/{id}")]
+        public IActionResult GetPublisherById(int id)
         {
             var _response = _publishersServices.GetPublisherData(id);
             return Ok(_response);
