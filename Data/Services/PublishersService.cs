@@ -59,6 +59,10 @@ namespace libreriaa_SLE.Data.Services
                 _context.Publisher.Remove(_publisher);
                 _context.SaveChanges();
             }
+            else
+            {
+                throw new Exception($"La editora con ese id {id} no existe!");
+            }
         }
     }
 }

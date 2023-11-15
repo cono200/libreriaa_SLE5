@@ -2,6 +2,7 @@
 using libreriaa_SLE.Data.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace libreriaa_SLE.Controllers
 {
@@ -20,8 +21,16 @@ namespace libreriaa_SLE.Controllers
         [HttpPost("add-publisher")]
         public IActionResult AddPublisher([FromBody] PublisherVM  publisher)
         {
-             var newPublisher= _publishersServices.AddPublisher(publisher);
-            return Created(nameof(AddPublisher), newPublisher);
+            try
+            {
+                var newPublisher = _publishersServices.AddPublisher(publisher);
+                return Created(nameof(AddPublisher), newPublisher);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
         }
 
         [HttpGet("get-publisher-by-id/{id}")]
@@ -52,8 +61,28 @@ namespace libreriaa_SLE.Controllers
         [HttpDelete("delete-publisher-by-id/{id}")]
         public IActionResult DeletePublisherById(int id)
         {
-            _publishersServices.DeletePublisherById(id);
-            return Ok();
+            
+            try
+            {
+                /*
+                //PROBANDO CON DIVISION ENTRE 0
+                int n1 = 0;
+                int n2 = 0;
+                int r = n1/n2;
+                */
+
+                _publishersServices.DeletePublisherById(id);
+                return Ok();
+
+
+
+
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
         }
 
 
