@@ -1,5 +1,6 @@
 ﻿using libreriaa_SLE.Data.Services;
 using libreriaa_SLE.Data.ViewModels;
+using libreriaa_SLE.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -26,6 +27,12 @@ namespace libreriaa_SLE.Controllers
                 var newPublisher = _publishersServices.AddPublisher(publisher);
                 return Created(nameof(AddPublisher), newPublisher);
             }
+
+            catch(PublisherNameException ex)
+            {
+                return BadRequest($"{ex.Message}, Nombre de la editora: {ex.PublisherName}");
+            }
+
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
