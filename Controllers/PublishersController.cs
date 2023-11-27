@@ -1,7 +1,9 @@
 ﻿using libreriaa_SLE.Data.Services;
 using libreriaa_SLE.Data.ViewModels;
+using libreriaa_SLE.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace libreriaa_SLE.Controllers
 {
@@ -20,12 +22,43 @@ namespace libreriaa_SLE.Controllers
         [HttpPost("add-publisher")]
         public IActionResult AddPublisher([FromBody] PublisherVM  publisher)
         {
-            _publishersServices.AddPublisher(publisher);
-            return Ok();
+            try
+            {
+                var newPublisher = _publishersServices.AddPublisher(publisher);
+                return Created(nameof(AddPublisher), newPublisher);
+            }
+
+            catch(PublisherNameException ex)
+            {
+                return BadRequest($"{ex.Message}, Nombre de la editora: {ex.PublisherName}");
+            }
+
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
         }
 
-        [HttpGet("get-publisher-books-with-authors/{id}")]
+        [HttpGet("get-publisher-by-id/{id}")]
         public IActionResult GetPublisherData(int id)
+        {
+            var _response = _publishersServices.GetPublisherByID(id);
+            if (_response != null)
+            {
+                return Ok(_response);
+            }
+            else
+            {
+                return NotFound();
+            }
+            
+        }
+
+
+
+        [HttpGet("get-publisher-books-with-authors/{id}")]
+        public IActionResult GetPublisherById(int id)
         {
             var _response = _publishersServices.GetPublisherData(id);
             return Ok(_response);
@@ -35,8 +68,28 @@ namespace libreriaa_SLE.Controllers
         [HttpDelete("delete-publisher-by-id/{id}")]
         public IActionResult DeletePublisherById(int id)
         {
-            _publishersServices.DeletePublisherById(id);
-            return Ok();
+            
+            try
+            {
+                /*
+                //PROBANDO CON DIVISION ENTRE 0
+                int n1 = 0;
+                int n2 = 0;
+                int r = n1/n2;
+                */
+
+                _publishersServices.DeletePublisherById(id);
+                return Ok();
+
+
+
+
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
         }
 
 

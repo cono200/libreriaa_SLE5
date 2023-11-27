@@ -1,7 +1,9 @@
 ﻿using libreriaa_SLE.Data.Models;
 using libreriaa_SLE.Data.ViewModels;
+using libreriaa_SLE.Exceptions;
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace libreriaa_SLE.Data.Services
 {
@@ -18,8 +20,14 @@ namespace libreriaa_SLE.Data.Services
         //METODO QUE NOS PERMITE AGREGAR UNA NUEVA EDITORA EN LA BD
 
 
-        public void AddPublisher(PublisherVM publisher)
+        public Publisher AddPublisher(PublisherVM publisher)
         {
+            if (StringStartsWithNumber(publisher.Name)) throw new PublisherNameException("El nombre empieza con un numero",
+                publisher.Name);
+
+
+
+
             var _publisher = new Publisher()
             {
                 Name = publisher.Name
@@ -27,7 +35,14 @@ namespace libreriaa_SLE.Data.Services
 
             _context.Publisher.Add(_publisher);
             _context.SaveChanges();
+
+            return _publisher;
+
         }
+
+
+        public Publisher GetPublisherByID(int id ) => _context.Publisher.FirstOrDefault(n => n.Id == id);
+
 
         public PublisherWithBooksAndAuthorsVM GetPublisherData(int publisherId)
         {
@@ -52,6 +67,17 @@ namespace libreriaa_SLE.Data.Services
                 _context.Publisher.Remove(_publisher);
                 _context.SaveChanges();
             }
+            else
+            {
+                throw new Exception($"La editora con ese id {id} no existe!");
+            }
         }
+
+        private bool StringStartsWithNumber(string name)
+        {
+            if (Regex.IsMatch(name,@"^\d")) return true;
+            return false;
+        }
+
     }
 }
